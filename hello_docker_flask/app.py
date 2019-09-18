@@ -1,5 +1,5 @@
 # app.py - a minimal flask api using flask_restful
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api,reqparse
 
 app = Flask(__name__)
@@ -15,11 +15,16 @@ class HelloWorld(Resource):
         return {'hello': 'world'}
 
 class Multiply(Resource):
-    def get(self, x):
+    def get(self):
+        args = parser.parse_args()
+        x = args['x']
+        x = float(x)
         result = x * x
         return {'result':result}
 
-    def post(self,x):
+    def post(self):
+        json_data = request.get_json(force=True)
+        x = float(json_data['x'])
         result = x * x
         return {"result":result}, 200
 
@@ -32,14 +37,17 @@ class Add(Resource):
         return {"result":result}
     
     def post(self):
-        args = parser.parse_args()
-        x = args['x']  
-        y = args['y'] 
+        json_data = request.get_json(force=True)
+        x = json_data['x']
+        y = json_data['y']
+        #args = parser.parse_args()
+        #x = args['x']  
+        #y = args['y'] 
         result = float(x) + float(y)
         return {"result":result}, 200
 
 api.add_resource(HelloWorld, '/hello')
-api.add_resource(Multiply, '/multiply/<float:x>')
+api.add_resource(Multiply, '/multiply')
 api.add_resource(Add, '/add')
 
 if __name__ == '__main__':
