@@ -7,8 +7,8 @@ api = Api(app)
 
 # Define parser and request args
 parser = reqparse.RequestParser()
-parser.add_argument('x', type=int, default=False, required=False)
-parser.add_argument('y', type=int, default=False, required=False)
+parser.add_argument('x', type=float, default=False, required=False)
+parser.add_argument('y', type=float, default=False, required=False)
 
 class HelloWorld(Resource):
     def get(self):
@@ -19,25 +19,27 @@ class Multiply(Resource):
         result = x * x
         return {'result':result}
 
+    def post(self,x):
+        result = x * x
+        return {"result":result}, 200
+
 class Add(Resource):
     def get(self):
         args = parser.parse_args()
         x = args['x']  
         y = args['y'] 
-        #api.add_resource(Add, '/add/?x=<int:x>&y=<int:y>')
-        result = int(x) + int(y)
+        result = float(x) + float(y)
         return {"result":result}
-
-    #def post(self):
-    #    args = parser.parse_args()
-    #    todo_id = int(max(TODOS.keys()).lstrip('todo')) + 1
-    #    todo_id = 'todo%i' % todo_id
-    #    TODOS[todo_id] = {'task': args['task']}
-     #   return TODOS[todo_id], 201
+    
+    def post(self):
+        args = parser.parse_args()
+        x = args['x']  
+        y = args['y'] 
+        result = float(x) + float(y)
+        return {"result":result}, 200
 
 api.add_resource(HelloWorld, '/hello')
-api.add_resource(Multiply, '/multiply/<int:x>')
-#api.add_resource(Add, '/add/?x=<int:x>&y=<int:y>')
+api.add_resource(Multiply, '/multiply/<float:x>')
 api.add_resource(Add, '/add')
 
 if __name__ == '__main__':
